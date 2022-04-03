@@ -80,17 +80,16 @@ FROM  tab1;
 /* Total Summer Olympics & Total Winter Olympics & List of all Olympic games */
 
 SELECT 
-   (SELECT COUNT(DISTINCT Games)
+       (SELECT COUNT(DISTINCT Games)
 	FROM olympic_history
 	WHERE Season='Summer')  AS Total_Summer_Olympics, 
 
 	(SELECT COUNT(DISTINCT Games) 
 	FROM olympic_history
 	WHERE Season='Winter') AS Total_Winter_Olympics,
-    
-    (SELECT COUNT(DISTINCT Games)
-     FROM olympic_history
-     ) AS Total_Olympic_games;
+
+	 (SELECT COUNT(DISTINCT Games)
+	  FROM olympic_history) AS Total_Olympic_games;
      
 /* ********************************************************************************************************************************** */
 /*Maximum  Participation count*/
@@ -127,12 +126,11 @@ SELECT DISTINCT(NOC), COUNT(DISTINCT(Games)) AS participation_number
 FROM olympic_history 
 GROUP BY NOC
 HAVING participation_number= (WITH tab1 AS
-									(SELECT DISTINCT (Season), Year
-									FROM olympic_history
-									ORDER BY Year)
-							 SELECT COUNT(*) AS Total_Olympic_Games
-							 FROM  tab1
-						    	)
+					(SELECT DISTINCT (Season), Year
+					FROM olympic_history
+					ORDER BY Year)
+			      SELECT COUNT(*) AS Total_Olympic_Games
+			      FROM  tab1)
 ORDER BY participation_number;
 
 /* ************************************************************************************************************************************* */
@@ -140,14 +138,13 @@ ORDER BY participation_number;
 
 WITH tab1 AS 
 	(SELECT DISTINCT(Sport), COUNT(DISTINCT(Games)) AS Sport_count, 
-	        (SELECT COUNT(DISTINCT(Year)) 
-             FROM olympic_history
-			 WHERE Season='Summer'
-	         ) AS Total_Summer_Olympics
+	                                                               (SELECT COUNT(DISTINCT(Year)) 
+                                                                        FROM olympic_history
+			                                                WHERE Season='Summer') AS Total_Summer_Olympics
 	 FROM olympic_history
 	 WHERE Season='Summer'
-     GROUP BY Sport
-     ORDER BY Sport_count DESC)
+         GROUP BY Sport
+         ORDER BY Sport_count DESC)
 SELECT *
 FROM tab1
 WHERE Sport_count=Total_Summer_Olympics;
@@ -157,14 +154,13 @@ WHERE Sport_count=Total_Summer_Olympics;
 
 WITH tab1 AS 
 	(SELECT DISTINCT(Sport), COUNT(DISTINCT(Games)) AS Sport_count, 
-	        (SELECT COUNT(DISTINCT(Year)) 
-             FROM olympic_history
-			 WHERE Season='Winter'
-	         ) AS Total_Summer_Olympics
+	                                                              (SELECT COUNT(DISTINCT(Year)) 
+                                                                        FROM olympic_history
+			                                                WHERE Season='Winter') AS Total_Summer_Olympics
 	 FROM olympic_history
 	 WHERE Season='Winter'
-     GROUP BY Sport
-     ORDER BY Sport_count DESC)
+         GROUP BY Sport
+         ORDER BY Sport_count DESC)
 SELECT *
 FROM tab1
 WHERE Sport_count=Total_Summer_Olympics;
