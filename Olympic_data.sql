@@ -200,13 +200,14 @@ WITH tab AS
 	(SELECT COUNT(Name) AS Male_count 
 	FROM olympic_history
 	WHERE Sex ='M')
-		SELECT *, 
-				(WITH tab2 AS
-						 (SELECT COUNT(Name)  
-						  FROM olympic_history
-						  WHERE Sex ='F') 
-				SELECT *
-				FROM tab2) AS Female_count , (SELECT Male_count/Female_count )AS Male_Female_Ratio
+SELECT *, 
+	(WITH tab2 AS
+	        (SELECT COUNT(Name)  
+	         FROM olympic_history
+	         WHERE Sex ='F') 
+	 SELECT *
+	 FROM tab2) AS Female_count ,
+	          (SELECT Male_count/Female_count )AS Male_Female_Ratio
 FROM tab;
 
 /* ************************************************************************************************************************************** */
@@ -237,20 +238,20 @@ GROUP BY Noc
 ORDER BY Total_medals DESC;
 
 /* ************************************************************************************************************************************** */
-/* Total gold, silver and bronze medals won by each country.*/
+/* Total Gold, Silver and Bronze medals won by each country.*/
 
 SELECT Noc,  COALESCE(SUM(Gold), 0) as 'Gold',
-		  COALESCE(SUM(Silver), 0) as 'Silver',
-		  COALESCE(SUM(Bronze), 0) as 'Bronze'
+	     COALESCE(SUM(Silver), 0) as 'Silver',
+	     COALESCE(SUM(Bronze), 0) as 'Bronze'
 FROM          
-		(SELECT Noc, CASE WHEN tab2.Medal='Gold' THEN  tab2.Total END AS 'Gold',
-					 CASE WHEN tab2.Medal='Silver' THEN  tab2.Total END AS 'Silver',
-					 CASE WHEN tab2.Medal='Bronze' THEN  tab2.Total END AS 'Bronze'
-		FROM (WITH tab1 AS 
-						(SELECT *,COUNT(*)
-						FROM olympic_history
-						GROUP BY Games, Noc, Medal,Event)
-			  SELECT * , COUNT(Medal) AS Total 
+     (SELECT Noc, CASE WHEN tab2.Medal='Gold' THEN  tab2.Total END AS 'Gold',
+		  CASE WHEN tab2.Medal='Silver' THEN  tab2.Total END AS 'Silver',
+		  CASE WHEN tab2.Medal='Bronze' THEN  tab2.Total END AS 'Bronze'
+     FROM (WITH tab1 AS 
+		  (SELECT *,COUNT(*)
+		  FROM olympic_history
+		  GROUP BY Games, Noc, Medal,Event)
+			SELECT * , COUNT(Medal) AS Total 
 			  FROM tab1
 			  GROUP BY Games,Noc,Medal,Event
 			  ORDER BY Noc) AS tab2) AS tab3
