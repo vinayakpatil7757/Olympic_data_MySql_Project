@@ -396,26 +396,26 @@ SELECT tab2.Event, COALESCE(MAX(Gold),0) AS 'Total_Gold',
 		   COALESCE(MAX(Silver),0) AS 'Total_Silver',
                    COALESCE(MAX(Bronze),0) AS 'Total_Bronze'
 FROM
-		(WITH tab1 AS
-				(SELECT Event,Medal ,COUNT(Medal) AS max_medals
-				FROM olympic_history
-				WHERE Medal <> 'NA'
-				GROUP BY Event, Medal
-				ORDER BY max_medals DESC)
-		 SELECT Event, CASE WHEN Medal='Gold'THEN max_medals END AS 'Gold',
-					   CASE WHEN Medal='Silver'THEN max_medals END AS 'Silver',
-					   CASE WHEN Medal='Bronze'THEN max_medals END AS 'Bronze'
-		FROM tab1) AS tab2
+    (WITH tab1 AS
+	    (SELECT Event,Medal ,COUNT(Medal) AS max_medals
+	     FROM olympic_history
+	     WHERE Medal <> 'NA'
+	     GROUP BY Event, Medal
+	     ORDER BY max_medals DESC)
+     SELECT Event, CASE WHEN Medal='Gold'THEN max_medals END AS 'Gold',
+		   CASE WHEN Medal='Silver'THEN max_medals END AS 'Silver',
+		   CASE WHEN Medal='Bronze'THEN max_medals END AS 'Bronze'
+     FROM tab1) AS tab2
 GROUP BY Event; 
 
 /* ************************************************************************************************************************************** */
 /* Hosting City Count */ 
 
 WITH tab1 AS
-	   (SELECT (Games),(City)
-		FROM olympic_history
-		GROUP BY Games,City
-		ORDER BY Games)
+	 (SELECT (Games),(City)
+          FROM olympic_history
+	  GROUP BY Games,City
+	  ORDER BY Games)
 SELECT City, COUNT(City) AS total_hosted
 FROM tab1
 GROUP BY City
@@ -424,20 +424,20 @@ ORDER BY total_hosted DESC;
 /* ************************************************************************************************************************************** */
 /*Success Ratio*/
 
-    SELECT 
-		 (WITH tab1 AS                       
-			  (SELECT COUNT(*) 
-			  FROM olympic_history
-			   WHERE Medal='NA') 
-		 SELECT *
-		 FROM tab1) No_medals , 
+ SELECT 
+	 (WITH tab1 AS                       
+		  (SELECT COUNT(*) 
+		  FROM olympic_history
+		   WHERE Medal='NA') 
+	 SELECT *
+	 FROM tab1) No_medals , 
          
-		(WITH tab2 AS                       
-			  (SELECT COUNT(*) 
-			  FROM olympic_history
-			   WHERE Medal <>'NA') 
-		 SELECT *
-		 FROM tab2) Medals,
+	(WITH tab2 AS                       
+		  (SELECT COUNT(*) 
+		  FROM olympic_history
+		   WHERE Medal <>'NA') 
+	 SELECT *
+	 FROM tab2) Medals,
          
-		(SELECT Medals/No_medals) AS Success_ratio;
+	(SELECT Medals/No_medals) AS Success_ratio;
         
