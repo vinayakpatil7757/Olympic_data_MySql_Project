@@ -251,36 +251,34 @@ FROM
 		  (SELECT *,COUNT(*)
 		  FROM olympic_history
 		  GROUP BY Games, Noc, Medal,Event)
-			SELECT * , COUNT(Medal) AS Total 
-			  FROM tab1
-			  GROUP BY Games,Noc,Medal,Event
-			  ORDER BY Noc) AS tab2) AS tab3
+	   SELECT * , COUNT(Medal) AS Total 
+	   FROM tab1
+	   GROUP BY Games,Noc,Medal,Event
+	   ORDER BY Noc) AS tab2) AS tab3
  GROUP BY Noc
  ORDER BY Gold DESC;
  
  /* ************************************************************************************************************************************** */
 /*Total gold, silver and bronze medals won by each country corresponding to each olympic games.*/
 
-SELECT Games,Noc,
-	   COALESCE(SUM(Gold),0) AS 'Gold',
-	   COALESCE(SUM(Silver),0) AS 'Silver',
-	   COALESCE(SUM(Bronze),0) AS 'Bronze'
+SELECT Games,Noc, COALESCE(SUM(Gold),0) AS 'Gold',
+	          COALESCE(SUM(Silver),0) AS 'Silver',
+	          COALESCE(SUM(Bronze),0) AS 'Bronze'
 FROM 
- (SELECT Games, Noc,
+    (SELECT Games, Noc,
 			  CASE WHEN tab2.Medal='Gold' THEN tab2.Total END AS 'Gold',
 			  CASE WHEN tab2.Medal='Silver' THEN tab2.Total END AS 'Silver',
 			  CASE WHEN tab2.Medal='Bronze' THEN tab2.Total END AS 'Bronze'
-	FROM
-		(WITH tab1 AS 
-			(SELECT Games,Noc, Medal
-			FROM olympic_history
-			WHERE Medal in ('Gold','Silver','Bronze')
-			)
-		SELECT * , COUNT(Medal) AS Total
-		FROM tab1
-		WHERE Medal='Gold' or Medal='Silver' or Medal='Bronze' 
-		GROUP BY Games,Noc,Medal
-		ORDER BY Games) AS tab2) AS tab3
+     FROM
+	  (WITH tab1 AS 
+		 (SELECT Games,Noc, Medal
+		  FROM olympic_history
+		  WHERE Medal in ('Gold','Silver','Bronze'))
+	   SELECT * , COUNT(Medal) AS Total
+	   FROM tab1
+	   WHERE Medal='Gold' or Medal='Silver' or Medal='Bronze' 
+	   GROUP BY Games,Noc,Medal
+	   ORDER BY Games) AS tab2) AS tab3
 GROUP BY Games, Noc;  
  
  /* ************************************************************************************************************************************** */
@@ -295,16 +293,16 @@ FROM
 		   CASE WHEN tab2.Medal ='Gold' THEN CONCAT(tab2.Noc,'-', tab2.Total_medals) END AS 'Total_Gold',
 		   CASE WHEN tab2.Medal ='Silver' THEN CONCAT(tab2.Noc,'-', tab2.Total_medals) END AS 'Total_Silver',
 		   CASE	WHEN tab2.Medal ='Bronze' THEN CONCAT(tab2.Noc,'-', tab2.Total_medals) END AS 'Total_Bronze'
-	  FROM
-			(WITH tab1 AS
-					(SELECT Games, Medal,Noc,COUNT(Medal) AS num_counts 
-					FROM olympic_history
-					WHERE Medal <> 'NA'
-					GROUP BY Games, Medal,Noc
-					ORDER BY Games,Medal, num_counts DESC)
-			SELECT Games,Medal,Noc, MAX(num_counts) AS Total_medals
-			FROM tab1
-			GROUP BY Games,Medal) AS tab2) AS tab3
+     FROM
+	 (WITH tab1 AS
+		 (SELECT Games, Medal,Noc,COUNT(Medal) AS num_counts 
+		  FROM olympic_history
+		  WHERE Medal <> 'NA'
+		  GROUP BY Games, Medal,Noc
+		  ORDER BY Games,Medal, num_counts DESC)
+	  SELECT Games,Medal,Noc, MAX(num_counts) AS Total_medals
+	  FROM tab1
+	  GROUP BY Games,Medal) AS tab2) AS tab3
 GROUP BY Games ;         
 
 /* ************************************************************************************************************************************** */
@@ -312,10 +310,10 @@ GROUP BY Games ;
 
 WITH tab0 AS
 	   (SELECT Games, Noc, COUNT(Medal) AS total_medals
-		FROM olympic_history
-		WHERE Medal <> 'NA'
-		GROUP BY Games,Noc
-		ORDER BY Games,total_medals DESC)
+	    FROM olympic_history
+	    WHERE Medal <> 'NA'
+	    GROUP BY Games,Noc
+	    ORDER BY Games,total_medals DESC)
 SELECT Games, Noc, MAX(total_medals) AS max_medals
 FROM tab0
 GROUP BY Games;
@@ -325,9 +323,9 @@ GROUP BY Games;
 
 WITH India AS
 	   (SELECT Sport, COUNT(Medal) AS Medals
-		FROM olympic_history
-		WHERE Noc='IND' AND Medal <> 'NA' 
-		GROUP BY Sport)
+	    FROM olympic_history
+	    WHERE Noc='IND' AND Medal <> 'NA' 
+	    GROUP BY Sport)
 SELECT Sport, MAX(Medals)
 FROM India
 HAVING MAX(Medals);
@@ -346,30 +344,30 @@ ORDER BY Medals DESC;
 
 SELECT tab4.Noc , tab4.Total_Silver, tab4.Total_Bronze
 FROM
-		(SELECT tab3.Noc, 
-				COALESCE(MAX(Gold),0) AS 'Total_Gold',
-				COALESCE(MAX(Silver),0) AS 'Total_Silver',
-				COALESCE(MAX(Bronze),0) AS 'Total_Bronze'
-		FROM        
-				(SELECT tab2.Noc, 
-						   CASE WHEN tab2.Medal='Gold' THEN tab2.total_medals END AS 'Gold',
-						   CASE WHEN tab2.Medal='Silver' THEN tab2.total_medals END AS 'Silver',
-						   CASE WHEN tab2.Medal='Bronze' THEN tab2.total_medals END AS 'Bronze'
-					 FROM      
-						  (WITH tab1 AS
-								(SELECT Noc,Medal,COUNT(Medal) AS total_medals
-								FROM olympic_history
-								WHERE Medal<> 'NA'
-								GROUP BY Noc,Medal
-								ORDER BY Noc)
-						   SELECT *
-						   FROM tab1
-						   GROUP BY Noc,Medal
-						   ORDER BY Noc) AS tab2
-					GROUP BY Noc,Medal
-					ORDER BY Noc) AS tab3
-		GROUP BY Noc 
-		ORDER BY Total_Gold, Total_Silver,Total_Bronze) AS tab4
+    (SELECT tab3.Noc, 
+			COALESCE(MAX(Gold),0) AS 'Total_Gold',
+			COALESCE(MAX(Silver),0) AS 'Total_Silver',
+			COALESCE(MAX(Bronze),0) AS 'Total_Bronze'
+     FROM        
+	 (SELECT tab2.Noc, 
+		        CASE WHEN tab2.Medal='Gold' THEN tab2.total_medals END AS 'Gold',
+		        CASE WHEN tab2.Medal='Silver' THEN tab2.total_medals END AS 'Silver',
+		        CASE WHEN tab2.Medal='Bronze' THEN tab2.total_medals END AS 'Bronze'
+	  FROM      
+		(WITH tab1 AS
+			(SELECT Noc,Medal,COUNT(Medal) AS total_medals
+       			 FROM olympic_history
+        		 WHERE Medal<> 'NA'
+			 GROUP BY Noc,Medal
+		         ORDER BY Noc)
+		   SELECT *
+		   FROM tab1
+		   GROUP BY Noc,Medal
+		   ORDER BY Noc) AS tab2
+	    GROUP BY Noc,Medal
+	    ORDER BY Noc) AS tab3
+	GROUP BY Noc 
+	ORDER BY Total_Gold, Total_Silver,Total_Bronze) AS tab4
 WHERE Total_Gold =0
 ORDER BY Total_Silver DESC;
 
@@ -395,8 +393,8 @@ ORDER BY Games;
 /*Total Medals given in each event*/
 
 SELECT tab2.Event, COALESCE(MAX(Gold),0) AS 'Total_Gold',
-			  COALESCE(MAX(Silver),0) AS 'Total_Silver',
-              COALESCE(MAX(Bronze),0) AS 'Total_Bronze'
+		   COALESCE(MAX(Silver),0) AS 'Total_Silver',
+                   COALESCE(MAX(Bronze),0) AS 'Total_Bronze'
 FROM
 		(WITH tab1 AS
 				(SELECT Event,Medal ,COUNT(Medal) AS max_medals
