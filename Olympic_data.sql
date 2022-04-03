@@ -2,9 +2,21 @@ CREATE DATABASE olympic_data;
 USE olympic_data;
 CREATE TABLE olympic_history
 (
-    ID INT, Name Varchar(255), Sex Varchar(255), Age Varchar(255),
-	Height Varchar(255), Weight Varchar(255), Team Varchar(255), Noc Varchar(255), Games Varchar(255), Year  INT, Season Varchar(255),
-	City Varchar(255), Sport Varchar(255), Event Varchar(255), Medal Varchar(255)
+    ID INT,
+    Name Varchar(255),
+    Sex Varchar(255),
+    Age Varchar(255),
+    Height Varchar(255),
+    Weight Varchar(255),
+    Team Varchar(255),
+    Noc Varchar(255),
+    Games Varchar(255),
+    Year  INT,
+    Season Varchar(255),
+    City Varchar(255),
+    Sport Varchar(255),
+    Event Varchar(255),
+    Medal Varchar(255)
 );
 
 /*Selecting all data from olympic_history table*/
@@ -38,9 +50,9 @@ GROUP BY Name ,Sex, Age, Height, Weight,Team,Noc, Games, Year,Season, City, Spor
 SELECT *
 FROM new_table;       
 
- DROP TABLE olympic_history; 
+DROP TABLE olympic_history; 
  
- ALTER TABLE new_table RENAME TO olympic_history;
+ALTER TABLE new_table RENAME TO olympic_history;
  
 /* ************************************************************************************************************************************* */
 /*Total rows in table*/
